@@ -1,0 +1,101 @@
+/* ============================================================
+   global.css — gaya dasar seluruh aplikasi
+   ============================================================
+   Kenapa file ini ada:
+   - Menetapkan "aturan main" tampilan SEBELUM ada 50 komponen.
+     Kalau tidak, tiap komponen punya font & warna berbeda sendiri.
+   - Variabel CSS (--nama) dipakai supaya warna bisa diubah dari
+     SATU tempat, bukan dicari di 50 file.
+   ============================================================ */
+
+/* --- Variabel global (design token) --- */
+:root {
+  /* Warna dasar */
+  --color-bg: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-border: #e2e5ea;
+  --color-text: #1a1d21;
+  --color-text-muted: #6b7280;
+
+  /* Warna brand */
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-light: #eff6ff;
+
+  /* Warna status (dipakai untuk stok, approval, dll.) */
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+
+  /* Ukuran */
+  --radius: 8px;
+  --radius-sm: 4px;
+  --sidebar-width: 240px;
+  --header-height: 60px;
+
+  /* Bayangan */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* Font */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+
+/* --- Reset dasar --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Elemen dasar --- */
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-bg);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Utilitas kecil --- */
+.text-muted {
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,25 @@
+/* AppLayout — kerangka halaman: sidebar + (header + isi) */
+
+.app-layout {
+  min-height: 100vh;
+}
+
+/* Area kanan: header + konten. Digeser sejauh lebar sidebar. */
+.app-layout__main {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Area isi halaman */
+.app-layout__content {
+  flex: 1;
+  padding: 24px;
+}
+
+/* Batas lebar maksimum supaya teks tidak melebar di layar besar */
+.app-layout__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
