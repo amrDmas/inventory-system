@@ -1,0 +1,43 @@
+.header {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e5ea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.header__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1d21;
+}
+
+.header__subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header__icon-button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e2e5ea;
+  border-radius: 6px;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.header__icon-button:hover {
+  background: #f5f6f8;
+}

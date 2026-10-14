@@ -1,4 +1,11 @@
-.app__content {
+.app__main {
   margin-left: 240px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app__content {
   padding: 32px;
+  flex: 1;
 }
