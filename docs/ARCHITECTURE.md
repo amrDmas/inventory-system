@@ -632,19 +632,25 @@ rusak dan gagal misterius saat user memakai fitur tertentu.
 
 ## 8. Deployment
 
+> ⚠️ **Keputusan biaya:** project ini dijalankan **tanpa biaya dan tanpa kartu kredit**.
+> Konsekuensinya, Cloud Functions dan Firebase Storage (yang memerlukan Blaze plan)
+> digantikan oleh GitHub Actions dan Cloudinary. Rincian lengkap beserta alasannya ada di
+> [`adr/0003-tanpa-biaya-tanpa-kartu-kredit.md`](adr/0003-tanpa-biaya-tanpa-kartu-kredit.md).
+> Tabel di bawah adalah target **final** yang mengikuti keputusan tersebut.
+
 Setiap bagian di-deploy ke tempat yang paling cocok dengan sifatnya. Ringkasnya:
 
 | Bagian | Target deploy | Alasan singkat |
 |---|---|---|
-| **Frontend (React SPA)** | **Firebase Hosting** (alternatif: Vercel) | Satu toolchain dengan Firebase, deploy satu perintah, CDN + HTTPS otomatis, rewrite SPA sederhana. Vercel dipilih bila butuh preview deployment per PR dan DX frontend yang lebih kaya. |
-| **REST API (Node)** | **Cloud Run** (alternatif: Render) | Cloud Run: container, auto-scale ke nol saat sepi (hemat), terintegrasi IAM & Secret Manager. Render: lebih sederhana untuk pemula, cocok bila belum nyaman dengan container. |
-| **Database** | **Firestore (Native mode)** | Layanan terkelola; tidak ada server DB untuk dirawat, backup & scaling ditangani Google. |
-| **Auth** | **Firebase Authentication** | Terkelola penuh; custom claims di-set lewat Admin SDK saat role user berubah. |
-| **File/lampiran** | **Firebase Storage** | Terintegrasi Auth; akses via signed URL; CDN bawaan. |
-| **Automasi** | **Cloud Functions** | Trigger Firestore, callable, dan scheduled berjalan tanpa server; cocok untuk notifikasi & agregasi. |
-| **Security Rules** | `firestore.rules`, `storage.rules` (deploy bersama Firebase) | Pertahanan berlapis: meski API mem-bypass Rules, Rules tetap menutup akses langsung dari klien. |
+| **Frontend (React SPA)** | **Firebase Hosting** | Satu toolchain dengan Firebase, deploy satu perintah, CDN + HTTPS otomatis, rewrite SPA sederhana. |
+| **REST API (Node)** | **Render** (free tier) | Tanpa kartu kredit. Instance "tidur" saat idle; dibangunkan berkala oleh GitHub Actions agar tetap hangat saat didemokan. |
+| **Database** | **Firestore (Native mode)** | Layanan terkelola; tidak ada server DB untuk dirawat, backup & scaling ditangani Google. Gratis pada Spark plan. |
+| **Auth** | **Firebase Authentication** | Terkelola penuh; custom claims di-set lewat Admin SDK saat role user berubah. Gratis pada Spark plan. |
+| **File/lampiran** | **Cloudinary** (menggantikan Firebase Storage) | Free tier 25 GB tanpa kartu kredit; sekaligus memenuhi poin JD "integrasi layanan pihak ketiga". Diakses lewat `StorageProvider` agar bisa ditukar. |
+| **Automasi** | **GitHub Actions (cron)** (menggantikan Cloud Functions) | Scheduled workflow memanggil endpoint job di REST API kita. Gratis untuk repo publik; melatih CI/CD + automasi sekaligus. |
+| **Security Rules** | `firestore.rules` (deploy bersama Firebase) | Pertahanan berlapis: meski API mem-bypass Rules, Rules tetap menutup akses langsung dari klien. |
 | **CI/CD** | **GitHub Actions** | Menjalankan lint → typecheck → test → build di setiap PR, lalu deploy otomatis saat merge ke `main`. |
-| **Monitoring & log** | Cloud Logging/Cloud Monitoring (API), Firebase Console (Functions/Hosting) | Log terstruktur & metrik latensi per endpoint; dasar untuk menangani masalah setelah rilis. |
+| **Monitoring & log** | **Sentry** (free tier) untuk error; Firebase Console untuk Hosting/Auth | Log terstruktur & metrik latensi per endpoint; dasar untuk menangani masalah setelah rilis. |
 
 ### Alur rilis yang dituju
 
@@ -657,15 +663,14 @@ Pull Request  →  GitHub Actions: lint + typecheck + test + build
                        v
               Merge ke main  →  Deploy otomatis:
                                    • Hosting: build SPA & deploy
-                                   • Cloud Run: build image & deploy revisi baru
-                                   • Functions: deploy function yang berubah
+                                   • Render: deploy revisi API baru
                                    • Rules/Indexes: deploy firestore.rules & indexes
                        │
                        v
               Verifikasi pasca-deploy: cek health endpoint, buka dashboard, uji login
 ```
 
-Strategi rilis: **staging dulu, lalu production**, dengan revisi Cloud Run yang bisa di-rollback
+Strategi rilis: **staging dulu, lalu production**, dengan deploy yang bisa di-rollback
 cepat. Setiap deploy menandai versi di log agar masalah bisa dilacak ke rilis tertentu.
 
 ---
