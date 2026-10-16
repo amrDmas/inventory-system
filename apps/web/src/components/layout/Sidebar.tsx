@@ -1,17 +1,22 @@
+import { Link, useLocation } from 'react-router-dom'
 import './Sidebar.css'
 
 const menu = [
-  { label: 'Dashboard', icon: '📊', active: true },
-  { label: 'Barang', icon: '📦', active: false },
-  { label: 'Kategori', icon: '🏷️', active: false },
-  { label: 'Supplier', icon: '🚚', active: false },
-  { label: 'Barang Masuk', icon: '⬇️', active: false },
-  { label: 'Barang Keluar', icon: '⬆️', active: false },
-  { label: 'Permintaan', icon: '📝', active: false },
-  { label: 'Laporan', icon: '📈', active: false },
+  { label: 'Dashboard', icon: '📊', path: '/' },
+  { label: 'Barang', icon: '📦', path: '/items' },
+  { label: 'Kategori', icon: '🏷️', path: '/categories' },
+  { label: 'Supplier', icon: '🚚', path: '/suppliers' },
+  { label: 'Barang Masuk', icon: '⬇️', path: '/stock-in' },
+  { label: 'Barang Keluar', icon: '⬆️', path: '/stock-out' },
+  { label: 'Permintaan', icon: '📝', path: '/requests' },
+  { label: 'Laporan', icon: '📈', path: '/reports' },
+  { label: 'Pengguna', icon: '👥', path: '/users' },
+  { label: 'Pengaturan', icon: '⚙️', path: '/settings' },
 ]
 
 export default function Sidebar() {
+  const { pathname } = useLocation()
+
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">
@@ -21,15 +26,16 @@ export default function Sidebar() {
 
       <nav>
         {menu.map((item) => (
-          <a
-            key={item.label}
-            href="#"
+          <Link
+            key={item.path}
+            to={item.path}
             className={
-              'sidebar__link' + (item.active ? ' sidebar__link--active' : '')
+              'sidebar__link' +
+              (pathname === item.path ? ' sidebar__link--active' : '')
             }
           >
             {item.icon} {item.label}
-          </a>
+          </Link>
         ))}
       </nav>
     </aside>
